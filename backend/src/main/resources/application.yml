@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: techVault
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/techvaultdb
+    username: postgres
+    password: 47Ayan96
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  profiles:
+    active: dev
+
+server:
+  port: 8080
