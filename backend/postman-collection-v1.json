@@ -1,0 +1,141 @@
+{
+  "info": {
+    "name": "TechVault API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "http://localhost:8080/api/v1/users", "host": ["http://localhost:8080"], "path": ["api", "v1", "users"] },
+            "body": { "mode": "raw", "raw": "{ \"username\": \"john_doe\", \"password\": \"password123\", \"email\": \"john@example.com\" }" }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/v1/users/1", "host": ["http://localhost:8080"], "path": ["api", "v1", "users", "1"] }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "http://localhost:8080/api/v1/users/1", "host": ["http://localhost:8080"], "path": ["api", "v1", "users", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "item": [
+        {
+          "name": "Create Post",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "http://localhost:8080/api/v1/posts", "host": ["http://localhost:8080"], "path": ["api", "v1", "posts"] },
+            "body": { "mode": "raw", "raw": "{ \"title\": \"My First Post\", \"content\": \"This is a post content\" }" }
+          }
+        },
+        {
+          "name": "Get All Posts",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/v1/posts", "host": ["http://localhost:8080"], "path": ["api", "v1", "posts"] }
+          }
+        },
+        {
+          "name": "Search Posts",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/v1/posts/search?keyword=tech", "host": ["http://localhost:8080"], "path": ["api", "v1", "posts", "search"], "query": [{ "key": "keyword", "value": "tech" }] }
+          }
+        },
+        {
+          "name": "Delete Post",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "http://localhost:8080/api/v1/posts/1", "host": ["http://localhost:8080"], "path": ["api", "v1", "posts", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "http://localhost:8080/api/v1/comments", "host": ["http://localhost:8080"], "path": ["api", "v1", "comments"] },
+            "body": { "mode": "raw", "raw": "{ \"content\": \"Nice post!\", \"postId\": 1 }" }
+          }
+        },
+        {
+          "name": "Get Comments by Post ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/v1/comments/post/1", "host": ["http://localhost:8080"], "path": ["api", "v1", "comments", "post", "1"] }
+          }
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "http://localhost:8080/api/v1/comments/1", "host": ["http://localhost:8080"], "path": ["api", "v1", "comments", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Likes",
+      "item": [
+        {
+          "name": "Add Like",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "http://localhost:8080/api/v1/likes", "host": ["http://localhost:8080"], "path": ["api", "v1", "likes"] },
+            "body": { "mode": "raw", "raw": "{ \"postId\": 1, \"userId\": 1 }" }
+          }
+        },
+        {
+          "name": "Remove Like",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "http://localhost:8080/api/v1/likes/1", "host": ["http://localhost:8080"], "path": ["api", "v1", "likes", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "item": [
+        {
+          "name": "Create Tag",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "http://localhost:8080/api/v1/tags", "host": ["http://localhost:8080"], "path": ["api", "v1", "tags"] },
+            "body": { "mode": "raw", "raw": "{ \"name\": \"Technology\" }" }
+          }
+        },
+        {
+          "name": "Get Tag by Name",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/v1/tags/Technology", "host": ["http://localhost:8080"], "path": ["api", "v1", "tags", "Technology"] }
+          }
+        }
+      ]
+    }
+  ]
+}

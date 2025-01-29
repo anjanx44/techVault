@@ -2,17 +2,9 @@ package com.anjan.techvault.domain.tag;
 
 import com.anjan.techvault.domain.post.Post;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Tag {
     @Id
@@ -25,5 +17,38 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     private List<Post> posts;
 
-    // Getters and setters
+    // No-Args Constructor
+    public Tag() {}
+
+    // All-Args Constructor
+    public Tag(Long id, String name, List<Post> posts) {
+        this.id = id;
+        this.name = name;
+        this.posts = posts;
+    }
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
 }

@@ -4,17 +4,9 @@ import com.anjan.techvault.domain.comment.Comment;
 import com.anjan.techvault.domain.post.Post;
 import com.anjan.techvault.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "likes")
 public class Like {
@@ -36,5 +28,58 @@ public class Like {
 
     private LocalDateTime createdAt;
 
-}
+    // No-Args Constructor
+    public Like() {
+        this.createdAt = LocalDateTime.now();
+    }
 
+    // All-Args Constructor
+    public Like(Long id, User user, Post post, Comment comment, LocalDateTime createdAt) {
+        this.id = id;
+        this.user = user;
+        this.post = post;
+        this.comment = comment;
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+    }
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+}

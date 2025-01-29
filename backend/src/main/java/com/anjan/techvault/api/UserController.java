@@ -1,4 +1,4 @@
-package com.anjan.techvault.api.v1;
+package com.anjan.techvault.api;
 
 import com.anjan.techvault.domain.user.User;
 import com.anjan.techvault.service.user.UserService;

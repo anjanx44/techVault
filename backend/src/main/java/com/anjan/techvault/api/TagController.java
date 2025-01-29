@@ -1,4 +1,4 @@
-package com.anjan.techvault.api.v1;
+package com.anjan.techvault.api;
 
 import com.anjan.techvault.domain.tag.Tag;
 import com.anjan.techvault.service.tag.TagService;
