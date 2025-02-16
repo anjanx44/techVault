@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface UserService {
 
     // Method to save or create a new user
-    void createUser(User user);
+    User createUser(User user);
 
     // Method to get a user by their ID
     Optional<User> getUserById(Long id);
