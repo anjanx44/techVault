@@ -1,9 +1,22 @@
 package com.anjan.techvault.domain.tag;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Optional;
 
-public interface TagRepository extends JpaRepository<Tag, Long> {
-    Optional<Tag> findByName(String name); // Find a tag by its name
+@ApplicationScoped
+public class TagRepository implements PanacheRepository<Tag> {
+
+    public Optional<Tag> findByName(String name) {
+        return find("name", name).firstResultOptional();
+    }
+
+    public Tag save(Tag tag) {
+        if (tag.getId() == null) {
+            persist(tag);
+        } else {
+            tag = getEntityManager().merge(tag);
+        }
+        return tag;
+    }
 }

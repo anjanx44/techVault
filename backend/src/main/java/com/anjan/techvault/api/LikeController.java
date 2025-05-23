@@ -2,27 +2,38 @@ package com.anjan.techvault.api;
 
 import com.anjan.techvault.domain.like.Like;
 import com.anjan.techvault.service.like.LikeService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/v1/likes")
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import io.quarkus.security.Authenticated;
+
+@Path("/api/v1/likes")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class LikeController {
 
     private final LikeService likeService;
 
+    @Inject
     public LikeController(LikeService likeService) {
         this.likeService = likeService;
     }
 
-    @PostMapping
-    public ResponseEntity<Like> addLike(@RequestBody Like like) {
-        return ResponseEntity.ok(likeService.addLike(like));
+    @POST
+    @RolesAllowed({"user"})
+    public Response addLike(Like like) {
+        return Response.ok(likeService.addLike(like)).build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeLike(@PathVariable Long id) {
+    @DELETE
+    @Path("/{id}")
+    @RolesAllowed({"user"})
+    public Response removeLike(@PathParam("id") Long id) {
         likeService.removeLike(id);
-        return ResponseEntity.noContent().build();
+        return Response.noContent().build();
     }
 }

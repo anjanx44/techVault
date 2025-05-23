@@ -1,10 +1,28 @@
 package com.anjan.techvault.domain.comment;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findByPostId(Long postId); // Find comments for a specific post
-    List<Comment> findByUserId(Long userId); // Find comments by a specific user
+@ApplicationScoped
+public class CommentRepository implements PanacheRepository<Comment> {
+
+    public List<Comment> findByPostId(Long postId) {
+        return list("post.id", postId);
+    }
+
+    public List<Comment> findByUserId(Long userId) {
+        return list("user.id", userId);
+    }
+
+    public Comment save(Comment comment) {
+        if (comment.getId() == null) {
+            persist(comment);
+        } else {
+            comment = getEntityManager().merge(comment);
+        }
+        return comment;
+    }
 }

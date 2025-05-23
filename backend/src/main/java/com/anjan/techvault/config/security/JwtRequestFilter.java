@@ -1,56 +1,57 @@
 package com.anjan.techvault.config.security;
 
 import com.anjan.techvault.core.utill.JwtUtil;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import com.anjan.techvault.service.user.CustomUserDetailsService;
+import io.quarkus.security.identity.SecurityIdentity;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.ext.Provider;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.io.IOException;
+import java.security.Principal;
 
-@Component
-public class JwtRequestFilter extends OncePerRequestFilter {
+/**
+ * JWT request filter for Quarkus.
+ *
+ * Note: This filter is not strictly necessary in Quarkus as JWT validation
+ * is handled automatically by the MicroProfile JWT implementation.
+ * This class is kept for compatibility and additional custom processing if needed.
+ */
+@Provider
+@Priority(Priorities.AUTHENTICATION)
+@ApplicationScoped
+public class JwtRequestFilter implements ContainerRequestFilter {
 
-    private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+    @Inject
+    JwtUtil jwtUtil;
 
-    public JwtRequestFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-    }
+    @Inject
+    CustomUserDetailsService userDetailsService;
+
+    @Inject
+    JsonWebToken jwt;
+
+    @Inject
+    SecurityIdentity securityIdentity;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+        // Most of the JWT validation is handled automatically by Quarkus/MicroProfile JWT
+        // This filter can be used for additional custom processing if needed
 
-        String username = null;
-        String jwt = null;
-
-        // Extract JWT from Authorization header
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt); // Extract the username from JWT
+        // Example: Log the current authenticated user if available
+        if (jwt != null && jwt.getName() != null) {
+            // User is authenticated, jwt.getName() contains the username
+            // Additional custom processing can be done here if needed
         }
 
-        // Validate token and set authentication context
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails = userDetailsService.loadUserByUsername(username);
-
-            if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {  // Pass the username (String) here
-                var authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            }
-        }
-
-        filterChain.doFilter(request, response);
+        // No need to manually set authentication as Quarkus handles this automatically
     }
 }

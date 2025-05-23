@@ -1,24 +1,34 @@
 package com.anjan.techvault.domain.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+@ApplicationScoped
+public class UserRepository implements PanacheRepository<User> {
 
     // Find user by username
-    Optional<User> findByUsername(String username);
+    public Optional<User> findByUsername(String username) {
+        return find("username", username).firstResultOptional();
+    }
 
     // Check if a username exists
-    boolean existsByUsername(String username);
+    public boolean existsByUsername(String username) {
+        return count("username", username) > 0;
+    }
 
     // Find user by email
-    Optional<User> findByEmail(String email);
+    public Optional<User> findByEmail(String email) {
+        return find("email", email).firstResultOptional();
+    }
 
-    // No need to add getUserById and deleteUser, as JpaRepository already provides these methods
-    // Optional<User> findById(Long id); // Provided by JpaRepository
-    // void deleteById(Long id); // Provided by JpaRepository
+    // Save a user (handles both insert and update)
+    public User save(User user) {
+        if (user.getId() == null) {
+            persist(user);
+        } else {
+            user = getEntityManager().merge(user);
+        }
+        return user;
+    }
 }
-
-
-

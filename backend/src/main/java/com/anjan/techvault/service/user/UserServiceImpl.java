@@ -2,54 +2,88 @@ package com.anjan.techvault.service.user;
 
 import com.anjan.techvault.domain.user.User;
 import com.anjan.techvault.domain.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 
 import java.util.Optional;
 
-@Service
+@ApplicationScoped
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    @Autowired
+    @Inject
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public User createUser(User user) {
-        userRepository.save(user); // Save or create a new user
-        return user;
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be empty");
+        }
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be empty");
+        }
+
+        return userRepository.save(user);
     }
 
     @Override
     public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id); // Find user by their ID
+        if (id == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+        return userRepository.find("id", id).firstResultOptional();
     }
 
     @Override
     public void deleteUser(Long id) {
-        userRepository.deleteById(id); // Delete a user by their ID
+        if (id == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
+        // Check if user exists before deleting
+        if (userRepository.count("id", id) == 0) {
+            throw new NotFoundException("User with ID " + id + " not found");
+        }
+
+        userRepository.delete("id", id);
     }
 
     @Override
     public void save(User user) {
-        userRepository.save(user); // Save the user to the database
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        userRepository.save(user);
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username); // Find a user by username
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        return userRepository.findByUsername(username);
     }
 
     @Override
     public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username); // Check if username already exists
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        return userRepository.existsByUsername(username);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email); // Find a user by email
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+        return userRepository.findByEmail(email);
     }
 }

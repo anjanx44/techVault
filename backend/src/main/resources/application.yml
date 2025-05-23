@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/techvaultdb
     username: postgres
-    password: 47Ayan96
+    password: postgres
     driver-class-name: org.postgresql.Driver
 
   jpa:

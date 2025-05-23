@@ -2,30 +2,34 @@ package com.anjan.techvault.service.user;
 
 import com.anjan.techvault.domain.user.User;
 import com.anjan.techvault.domain.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-
+import io.quarkus.security.UnauthorizedException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.Collections;
 
-@Service
-public class CustomUserDetailsService implements UserDetailsService {
+/**
+ * Custom user details service for Quarkus security.
+ * This service is responsible for loading user details from the database.
+ */
+@ApplicationScoped
+public class CustomUserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    @Inject
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                Collections.emptyList() // Add roles/authorities here if needed
-        );
+    /**
+     * Load a user by username.
+     *
+     * @param username the username to look up
+     * @return the user object
+     * @throws UnauthorizedException if the user is not found
+     */
+    public User loadUserByUsername(String username) throws UnauthorizedException {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UnauthorizedException("User not found with username: " + username));
     }
 }
-
