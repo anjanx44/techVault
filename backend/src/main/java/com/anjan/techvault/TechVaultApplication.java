@@ -1,13 +1,13 @@
 package com.anjan.techvault;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.quarkus.runtime.Quarkus;
+import io.quarkus.runtime.annotations.QuarkusMain;
 
-@SpringBootApplication
+@QuarkusMain
 public class TechVaultApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TechVaultApplication.class, args);
+        Quarkus.run(args);
     }
 
 }

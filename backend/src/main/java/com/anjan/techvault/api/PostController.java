@@ -2,39 +2,53 @@ package com.anjan.techvault.api;
 
 import com.anjan.techvault.domain.post.Post;
 import com.anjan.techvault.service.post.PostService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/posts")
+import io.quarkus.security.Authenticated;
+
+@Path("/api/v1/posts")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class PostController {
 
     private final PostService postService;
 
+    @Inject
     public PostController(PostService postService) {
         this.postService = postService;
     }
 
-    @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        return ResponseEntity.ok(postService.createPost(post));
+    @POST
+    @RolesAllowed({"user"})
+    public Response createPost(Post post) {
+        return Response.ok(postService.createPost(post)).build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
+    @GET
+    @PermitAll
+    public Response getAllPosts() {
+        return Response.ok(postService.getAllPosts()).build();
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Post>> searchPostsByTitle(@RequestParam String keyword) {
-        return ResponseEntity.ok(postService.searchPostsByTitle(keyword));
+    @GET
+    @Path("/search")
+    @PermitAll
+    public Response searchPostsByTitle(@QueryParam("keyword") String keyword) {
+        return Response.ok(postService.searchPostsByTitle(keyword)).build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+    @DELETE
+    @Path("/{id}")
+    @RolesAllowed({"admin"})
+    public Response deletePost(@PathParam("id") Long id) {
         postService.deletePost(id);
-        return ResponseEntity.noContent().build();
+        return Response.noContent().build();
     }
 }

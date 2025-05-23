@@ -1,50 +1,51 @@
 package com.anjan.techvault.core.utill;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
+import io.smallrye.jwt.build.Jwt;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import java.util.Date;
-import java.util.function.Function;
+import jakarta.inject.Inject;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
-@Component
+@ApplicationScoped
 public class JwtUtil {
-    private final String SECRET_KEY = "Jd5A+QkXHsNzR9oIbTkjqv4ULtpF6R38EbsjCtNW+HY=\n"; // Use a strong secret key in production
+
+    @Inject
+    JsonWebToken jwt;
+
+    private final String ISSUER = "https://techvault.com/issuer";
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        // In Quarkus, token validation and extraction is handled by the runtime
+        // This is a simplified version for compatibility
+        return jwt.getName();
     }
 
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-    }
-
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    public long extractExpiration() {
+        return jwt.getExpirationTime();
     }
 
     public String generateToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours validity
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
+        Set<String> groups = new HashSet<>();
+        groups.add("user");
+
+        return Jwt.issuer(ISSUER)
+                .subject(username)
+                .groups(groups)
+                .expiresIn(Duration.ofHours(10)) // 10 hours validity
+                .sign();
     }
 
     public Boolean validateToken(String token, String username) {
-        final String extractedUsername = extractUsername(token);
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+        // In Quarkus, token validation is handled by the runtime
+        // This is a simplified version for compatibility
+        return jwt.getName().equals(username) && !isTokenExpired();
+    }
+
+    private Boolean isTokenExpired() {
+        return Instant.ofEpochSecond(extractExpiration()).isBefore(Instant.now());
     }
 }
-

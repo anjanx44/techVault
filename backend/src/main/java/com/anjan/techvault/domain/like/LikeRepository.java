@@ -1,10 +1,26 @@
 package com.anjan.techvault.domain.like;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Optional;
 
-public interface LikeRepository extends JpaRepository<Like, Long> {
-    Optional<Like> findByUserIdAndPostId(Long userId, Long postId); // Find like by user and post
-    Optional<Like> findByUserIdAndCommentId(Long userId, Long commentId); // Find like by user and comment
+@ApplicationScoped
+public class LikeRepository implements PanacheRepository<Like> {
+
+    public Optional<Like> findByUserIdAndPostId(Long userId, Long postId) {
+        return find("user.id = ?1 and post.id = ?2", userId, postId).firstResultOptional();
+    }
+
+    public Optional<Like> findByUserIdAndCommentId(Long userId, Long commentId) {
+        return find("user.id = ?1 and comment.id = ?2", userId, commentId).firstResultOptional();
+    }
+
+    public Like save(Like like) {
+        if (like.getId() == null) {
+            persist(like);
+        } else {
+            like = getEntityManager().merge(like);
+        }
+        return like;
+    }
 }

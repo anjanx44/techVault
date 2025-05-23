@@ -2,15 +2,17 @@ package com.anjan.techvault.service.like;
 
 import com.anjan.techvault.domain.like.Like;
 import com.anjan.techvault.domain.like.LikeRepository;
-import org.springframework.stereotype.Service;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import java.util.Optional;
 
-@Service
+@ApplicationScoped
 public class LikeServiceImpl implements LikeService {
 
     private final LikeRepository likeRepository;
 
+    @Inject
     public LikeServiceImpl(LikeRepository likeRepository) {
         this.likeRepository = likeRepository;
     }
