@@ -13,11 +13,12 @@ export default function HomePage() {
             TechVault
           </Link>
           {/* Navigation Links */}
-          <nav className="hidden md:flex space-x-6">
+          <nav className="hidden md:flex space-x-6 items-center">
             <Link href="/" className="text-gray-600 hover:text-blue-600 transition duration-150 font-medium">Home</Link>
-            <Link href="#" className="text-gray-600 hover:text-blue-600 transition duration-150 font-medium">Topics</Link>
+            <Link href="/blog" className="text-gray-600 hover:text-blue-600 transition duration-150 font-medium">Blog</Link>
             <Link href="#" className="text-gray-600 hover:text-blue-600 transition duration-150 font-medium">About</Link>
-            <Link href="#" className="text-blue-600 border border-blue-600 px-3 py-1 rounded-full hover:bg-blue-50 transition duration-150">Subscribe</Link>
+            <Link href="/login" className="text-gray-600 hover:text-blue-600 transition duration-150 font-medium">Login</Link>
+            <Link href="/register" className="text-blue-600 border border-blue-600 px-3 py-1 rounded-full hover:bg-blue-50 transition duration-150">Register</Link>
           </nav>
           {/* Mobile Menu Icon */}
           <button className="md:hidden text-gray-600 hover:text-blue-600">
