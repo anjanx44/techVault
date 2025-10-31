@@ -3,6 +3,7 @@ package com.anjan.techvault.api;
 import com.anjan.techvault.core.utill.JwtUtil;
 import com.anjan.techvault.domain.user.User;
 import com.anjan.techvault.dto.AuthenticationResponse;
+import com.anjan.techvault.dto.LoginRequest;
 import com.anjan.techvault.dto.RegistrationRequest;
 import com.anjan.techvault.service.user.UserService;
 import com.anjan.techvault.config.security.SecurityConfig.PasswordEncoder;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.transaction.Transactional;
 
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -33,6 +35,7 @@ public class AuthenticationController {
     @POST
     @Path("/register")
     @PermitAll
+    @Transactional
     public Response registerUser(RegistrationRequest request) {
         // Check if username/email is already taken
         if (userService.existsByUsername(request.getUsername())) {
@@ -58,7 +61,7 @@ public class AuthenticationController {
     @POST
     @Path("/login")
     @PermitAll
-    public Response login(RegistrationRequest request) {
+    public Response login(LoginRequest request) {
         try {
             // Validate user credentials
             User user = userService.findByUsername(request.getUsername())
