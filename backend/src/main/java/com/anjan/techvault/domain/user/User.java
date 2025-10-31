@@ -3,6 +3,7 @@ package com.anjan.techvault.domain.user;
 import com.anjan.techvault.domain.comment.Comment;
 import com.anjan.techvault.domain.post.Post;
 import com.anjan.techvault.domain.role.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -37,9 +38,11 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Post> posts;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Comment> comments;
 
     // No-Args Constructor
