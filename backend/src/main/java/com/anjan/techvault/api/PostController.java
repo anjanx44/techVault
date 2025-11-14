@@ -34,8 +34,8 @@ public class PostController {
         Post post = new Post();
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
+        post.setFeatured(request.getFeatured());
         
-        // For testing, use the first user or create a dummy user
         User user = userService.findByUsername("anjanx44")
                 .orElseThrow(() -> new WebApplicationException("User not found", 400));
         post.setUser(user);
