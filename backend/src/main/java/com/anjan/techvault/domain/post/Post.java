@@ -35,7 +35,10 @@ public class Post {
     )
     private List<Tag> tags;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     private Boolean published = true;

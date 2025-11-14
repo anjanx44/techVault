@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="acd7f02f-9091-4b5b-b124-c0fe77425d4a" name="Changes" comment="feat: added featured post">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="acd7f02f-9091-4b5b-b124-c0fe77425d4a" name="Changes" comment="fix: featured post">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/anjan/techvault/api/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/anjan/techvault/api/PostController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/anjan/techvault/dto/CreatePostRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/anjan/techvault/dto/CreatePostRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/anjan/techvault/domain/comment/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/anjan/techvault/domain/comment/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/anjan/techvault/domain/post/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/anjan/techvault/domain/post/Post.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +104,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="npm.Frontend Dev">
+  <component name="RunManager" selected="Maven.Quarkus Dev">
     <configuration name="Full Stack Dev" type="CompoundRunConfigurationType">
       <toRun name="Quarkus Dev" type="MavenRunConfiguration" />
       <toRun name="Frontend Dev" type="js.build_tools.npm" />
@@ -225,7 +227,7 @@
       <workItem from="1761888234649" duration="6562000" />
       <workItem from="1761901460394" duration="665000" />
       <workItem from="1763109207033" duration="3127000" />
-      <workItem from="1763118897732" duration="333000" />
+      <workItem from="1763118897732" duration="2492000" />
     </task>
     <task id="LOCAL-00001" summary="project init">
       <option name="closed" value="true" />
@@ -307,7 +309,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763111056683</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fix: featured post">
+      <option name="closed" value="true" />
+      <created>1763119385311</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1763119385311</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -323,7 +333,8 @@
     <MESSAGE value="added run configuration" />
     <MESSAGE value="added docs" />
     <MESSAGE value="feat: added featured post" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: added featured post" />
+    <MESSAGE value="fix: featured post" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: featured post" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

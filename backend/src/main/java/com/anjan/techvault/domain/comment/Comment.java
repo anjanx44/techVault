@@ -31,6 +31,7 @@ public class Comment {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
     private List<Comment> replies;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     // No-Args Constructor
