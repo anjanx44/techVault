@@ -1,0 +1,149 @@
+@startuml TechVault - Create Post Sequence
+
+actor User
+participant "PostController" as Controller
+participant "AuthService" as Auth
+participant "PostService" as Service
+participant "PostRepository" as Repository
+participant "CategoryRepository" as CatRepo
+participant "TagRepository" as TagRepo
+database "PostgreSQL" as DB
+
+User -> Controller: POST /api/posts
+activate Controller
+
+Controller -> Auth: validateToken(token)
+activate Auth
+Auth -> Auth: verifyJWT(token)
+Auth --> Controller: UserDetails
+deactivate Auth
+
+Controller -> Controller: validateRequest(createPostDto)
+
+Controller -> Service: createPost(createPostDto, user)
+activate Service
+
+Service -> CatRepo: findByIds(categoryIds)
+activate CatRepo
+CatRepo -> DB: SELECT * FROM categories WHERE id IN (...)
+DB --> CatRepo: categories
+CatRepo --> Service: List<Category>
+deactivate CatRepo
+
+Service -> TagRepo: findByIds(tagIds)
+activate TagRepo
+TagRepo -> DB: SELECT * FROM tags WHERE id IN (...)
+DB --> TagRepo: tags
+TagRepo --> Service: List<Tag>
+deactivate TagRepo
+
+Service -> Service: createPostEntity(dto, categories, tags, user)
+Service -> Service: generateSlug(title)
+
+Service -> Repository: persist(post)
+activate Repository
+Repository -> DB: INSERT INTO posts (...)
+DB --> Repository: post with id
+Repository --> Service: Post
+deactivate Repository
+
+Service -> Service: mapToDto(post)
+Service --> Controller: PostDto
+deactivate Service
+
+Controller --> User: 201 Created + PostDto
+deactivate Controller
+
+@enduml
+
+@startuml TechVault - User Authentication Sequence
+
+actor User
+participant "AuthController" as Controller
+participant "AuthService" as Service
+participant "UserRepository" as Repository
+participant "PasswordEncoder" as Encoder
+participant "JWTService" as JWT
+database "PostgreSQL" as DB
+
+User -> Controller: POST /api/auth/login
+activate Controller
+
+Controller -> Controller: validateLoginRequest(loginDto)
+
+Controller -> Service: login(username, password)
+activate Service
+
+Service -> Repository: findByUsername(username)
+activate Repository
+Repository -> DB: SELECT * FROM users WHERE username = ?
+DB --> Repository: user
+Repository --> Service: Optional<User>
+deactivate Repository
+
+alt User not found
+    Service --> Controller: throw UserNotFoundException
+    Controller --> User: 401 Unauthorized
+else User found
+    Service -> Encoder: matches(password, user.passwordHash)
+    activate Encoder
+    Encoder --> Service: boolean
+    deactivate Encoder
+    
+    alt Password invalid
+        Service --> Controller: throw InvalidCredentialsException
+        Controller --> User: 401 Unauthorized
+    else Password valid
+        Service -> JWT: generateToken(user)
+        activate JWT
+        JWT --> Service: token
+        deactivate JWT
+        
+        Service -> Service: mapToLoginResponse(user, token)
+        Service --> Controller: LoginResponseDto
+        deactivate Service
+        
+        Controller --> User: 200 OK + LoginResponseDto
+    end
+end
+
+deactivate Controller
+
+@enduml
+
+@startuml TechVault - Get Posts with Pagination Sequence
+
+actor User
+participant "PostController" as Controller
+participant "PostService" as Service
+participant "PostRepository" as Repository
+database "PostgreSQL" as DB
+
+User -> Controller: GET /api/posts?page=0&size=10&category=java
+activate Controller
+
+Controller -> Controller: parseQueryParameters()
+
+Controller -> Service: getAllPosts(pageable, filters)
+activate Service
+
+Service -> Repository: findPublishedPosts(pageable, categoryFilter)
+activate Repository
+
+Repository -> DB: SELECT p.* FROM posts p \n JOIN post_categories pc ON p.id = pc.post_id \n JOIN categories c ON pc.category_id = c.id \n WHERE p.status = 'PUBLISHED' \n AND c.slug = 'java' \n ORDER BY p.published_at DESC \n LIMIT 10 OFFSET 0
+DB --> Repository: List<Post>
+
+Repository -> DB: SELECT COUNT(*) FROM posts p \n JOIN post_categories pc ON p.id = pc.post_id \n JOIN categories c ON pc.category_id = c.id \n WHERE p.status = 'PUBLISHED' \n AND c.slug = 'java'
+DB --> Repository: totalCount
+
+Repository --> Service: Page<Post>
+deactivate Repository
+
+Service -> Service: mapToDto(posts)
+Service --> Controller: Page<PostDto>
+deactivate Service
+
+Controller --> User: 200 OK + Page<PostDto>
+deactivate Controller
+
+@enduml

@@ -1,0 +1,210 @@
+@startuml TechVault Class Diagram
+
+!define ENTITY class
+!define SERVICE class
+!define CONTROLLER class
+
+package "Entity Layer" {
+    ENTITY User {
+        -Long id
+        -String username
+        -String email
+        -String passwordHash
+        -String firstName
+        -String lastName
+        -String bio
+        -String avatarUrl
+        -Boolean isActive
+        -LocalDateTime createdAt
+        -LocalDateTime updatedAt
+        --
+        +List<Post> posts
+        +List<Comment> comments
+    }
+
+    ENTITY Post {
+        -Long id
+        -String title
+        -String slug
+        -String content
+        -String excerpt
+        -String featuredImage
+        -PostStatus status
+        -LocalDateTime publishedAt
+        -LocalDateTime createdAt
+        -LocalDateTime updatedAt
+        --
+        +User author
+        +List<Category> categories
+        +List<Tag> tags
+        +List<Comment> comments
+    }
+
+    ENTITY Category {
+        -Long id
+        -String name
+        -String slug
+        -String description
+        -LocalDateTime createdAt
+        --
+        +List<Post> posts
+    }
+
+    ENTITY Tag {
+        -Long id
+        -String name
+        -String slug
+        -LocalDateTime createdAt
+        --
+        +List<Post> posts
+    }
+
+    ENTITY Comment {
+        -Long id
+        -String content
+        -Boolean isApproved
+        -LocalDateTime createdAt
+        -LocalDateTime updatedAt
+        --
+        +Post post
+        +User author
+        +Comment parent
+        +List<Comment> replies
+    }
+
+    enum PostStatus {
+        DRAFT
+        PUBLISHED
+        ARCHIVED
+    }
+}
+
+package "Repository Layer" {
+    SERVICE PostRepository {
+        +List<Post> findPublishedPosts()
+        +Optional<Post> findBySlug(String slug)
+        +Page<Post> findByCategory(Category category, Pageable pageable)
+        +Page<Post> findByTag(Tag tag, Pageable pageable)
+    }
+
+    SERVICE UserRepository {
+        +Optional<User> findByUsername(String username)
+        +Optional<User> findByEmail(String email)
+        +Boolean existsByUsername(String username)
+        +Boolean existsByEmail(String email)
+    }
+
+    SERVICE CategoryRepository {
+        +Optional<Category> findBySlug(String slug)
+        +List<Category> findAllOrderByName()
+    }
+
+    SERVICE TagRepository {
+        +Optional<Tag> findBySlug(String slug)
+        +List<Tag> findAllOrderByName()
+    }
+
+    SERVICE CommentRepository {
+        +List<Comment> findByPostOrderByCreatedAt(Post post)
+        +List<Comment> findApprovedByPost(Post post)
+    }
+}
+
+package "Service Layer" {
+    SERVICE PostService {
+        +PostDto createPost(CreatePostDto dto)
+        +PostDto updatePost(Long id, UpdatePostDto dto)
+        +void deletePost(Long id)
+        +PostDto getPostBySlug(String slug)
+        +Page<PostDto> getAllPosts(Pageable pageable)
+    }
+
+    SERVICE UserService {
+        +UserDto createUser(CreateUserDto dto)
+        +UserDto getUserById(Long id)
+        +UserDto updateUser(Long id, UpdateUserDto dto)
+    }
+
+    SERVICE AuthService {
+        +String login(LoginDto dto)
+        +UserDto register(RegisterDto dto)
+        +void logout(String token)
+    }
+
+    SERVICE CategoryService {
+        +CategoryDto createCategory(CreateCategoryDto dto)
+        +List<CategoryDto> getAllCategories()
+    }
+
+    SERVICE TagService {
+        +TagDto createTag(CreateTagDto dto)
+        +List<TagDto> getAllTags()
+    }
+
+    SERVICE CommentService {
+        +CommentDto createComment(Long postId, CreateCommentDto dto)
+        +List<CommentDto> getCommentsByPost(Long postId)
+        +void approveComment(Long commentId)
+    }
+}
+
+package "Controller Layer" {
+    CONTROLLER PostController {
+        +ResponseEntity<Page<PostDto>> getAllPosts()
+        +ResponseEntity<PostDto> getPostBySlug(String slug)
+        +ResponseEntity<PostDto> createPost(CreatePostDto dto)
+        +ResponseEntity<PostDto> updatePost(Long id, UpdatePostDto dto)
+        +ResponseEntity<Void> deletePost(Long id)
+    }
+
+    CONTROLLER AuthController {
+        +ResponseEntity<LoginResponseDto> login(LoginDto dto)
+        +ResponseEntity<UserDto> register(RegisterDto dto)
+        +ResponseEntity<Void> logout()
+    }
+
+    CONTROLLER CategoryController {
+        +ResponseEntity<List<CategoryDto>> getAllCategories()
+        +ResponseEntity<CategoryDto> createCategory(CreateCategoryDto dto)
+    }
+
+    CONTROLLER TagController {
+        +ResponseEntity<List<TagDto>> getAllTags()
+        +ResponseEntity<TagDto> createTag(CreateTagDto dto)
+    }
+
+    CONTROLLER CommentController {
+        +ResponseEntity<List<CommentDto>> getCommentsByPost(Long postId)
+        +ResponseEntity<CommentDto> createComment(Long postId, CreateCommentDto dto)
+    }
+}
+
+' Relationships
+User ||--o{ Post : "authors"
+User ||--o{ Comment : "writes"
+Post ||--o{ Comment : "has"
+Post }o--o{ Category : "belongs to"
+Post }o--o{ Tag : "tagged with"
+Comment ||--o{ Comment : "replies to"
+
+' Dependencies
+PostController --> PostService
+AuthController --> AuthService
+CategoryController --> CategoryService
+TagController --> TagService
+CommentController --> CommentService
+
+PostService --> PostRepository
+UserService --> UserRepository
+AuthService --> UserRepository
+CategoryService --> CategoryRepository
+TagService --> TagRepository
+CommentService --> CommentRepository
+
+PostRepository --> Post
+UserRepository --> User
+CategoryRepository --> Category
+TagRepository --> Tag
+CommentRepository --> Comment
+
+@enduml

@@ -2,9 +2,19 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="parent" />
+      <option name="name" value="parent" />
+      <option name="url" value="https://maven.pkg.github.com/lidionbank-payment/payment-parent" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="payment-shared-tables" />
+      <option name="name" value="payment-shared-tables" />
+      <option name="url" value="https://maven.pkg.github.com/lidionbank-payment/payment-shared-tables" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -15,6 +25,26 @@
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="tm-shared-tables" />
+      <option name="name" value="tm-shared-tables" />
+      <option name="url" value="https://maven.pkg.github.com/lidionbank-transaction-monitoring/tm-shared-tables" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="convera-incoming" />
+      <option name="name" value="convera-incoming" />
+      <option name="url" value="https://maven.pkg.github.com/lidionbank-utilization/sil-script" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="central" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="common-utils" />
+      <option name="name" value="common-utils" />
+      <option name="url" value="https://maven.pkg.github.com/lidionbank-utilization/common-utils" />
     </remote-repository>
   </component>
 </project>
