@@ -1,8 +1,39 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 export default function HomePage() {
+  const [featuredPost, setFeaturedPost] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch featured posts
+    fetch('http://localhost:8080/api/v1/posts/featured')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setFeaturedPost(data[0]);
+        }
+      })
+      .catch(err => console.error('Error fetching featured posts:', err));
+      
+    // Fetch all posts
+    fetch('http://localhost:8080/api/v1/posts')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setPosts(data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching posts:', err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <div className="antialiased text-gray-800">
       {/* Header & Navigation */}
@@ -33,22 +64,24 @@ export default function HomePage() {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 mt-10 mb-20">
         
         {/* Featured Section */}
-        <section className="bg-white p-8 rounded-xl shadow-lg mb-12">
-          <span className="text-xs font-semibold uppercase tracking-wider text-blue-500 bg-blue-100 px-3 py-1 rounded-full">Featured</span>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mt-4 mb-3 leading-tight">
-            Mastering the Hexagonal Architecture in React
-          </h1>
-          <p className="text-lg text-gray-600 mb-6">
-            Learn how to separate your core domain logic from infrastructure concerns like RoomDB, APIs, and UI frameworks for scalable, testable applications.
-          </p>
-          <div className="flex items-center space-x-4">
-            <img className="w-12 h-12 rounded-full object-cover" src="https://placehold.co/150x150/4f46e5/ffffff?text=JT" alt="Author Avatar" />
-            <div>
-              <p className="text-sm font-semibold text-gray-800">Jane Doe</p>
-              <p className="text-xs text-gray-500">October 25, 2025 · 8 min read</p>
+        {featuredPost && (
+          <section className="bg-white p-8 rounded-xl shadow-lg mb-12">
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-500 bg-blue-100 px-3 py-1 rounded-full">Featured</span>
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mt-4 mb-3 leading-tight">
+              {featuredPost.title}
+            </h1>
+            <p className="text-lg text-gray-600 mb-6">
+              {featuredPost.content}
+            </p>
+            <div className="flex items-center space-x-4">
+              <img className="w-12 h-12 rounded-full object-cover" src="https://placehold.co/150x150/4f46e5/ffffff?text=JT" alt="Author Avatar" />
+              <div>
+                <p className="text-sm font-semibold text-gray-800">{featuredPost.user.username}</p>
+                <p className="text-xs text-gray-500">{new Date(featuredPost.createdAt).toLocaleDateString()} · 8 min read</p>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Articles Grid and Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -57,68 +90,32 @@ export default function HomePage() {
           <section className="lg:col-span-8 space-y-8">
             <h2 className="text-2xl font-bold text-gray-900 border-b pb-2 mb-4">Latest Articles</h2>
 
-            {/* Article Card 1 */}
-            <article className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-              <div className="flex flex-col md:flex-row gap-6 items-start">
-                <div className="md:w-1/3">
-                  <img className="w-full h-32 object-cover rounded-lg" src="https://placehold.co/400x250/3b82f6/ffffff?text=Python+ML" alt="Machine Learning" />
-                </div>
-                <div className="md:w-2/3">
-                  <p className="text-sm font-semibold text-purple-600 mb-1">MACHINE LEARNING</p>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Why Python is Still the King for Competitive Programming and AI
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-3">
-                    Transitioning from C++? Understand the performance trade-offs and leverage Python's powerful libraries like NumPy and Pandas for rapid prototyping.
-                  </p>
-                  <div className="text-xs text-gray-500">
-                    John Smith · 2 days ago · 5 min read
+            {/* Dynamic Articles */}
+            {loading ? (
+              <div className="text-center py-8">Loading articles...</div>
+            ) : (
+              posts.filter(post => !post.featured).map((post) => (
+              <article key={post.id} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  <div className="md:w-1/3">
+                    <img className="w-full h-32 object-cover rounded-lg" src="https://placehold.co/400x250/3b82f6/ffffff?text=Article" alt="Article" />
+                  </div>
+                  <div className="md:w-2/3">
+                    <p className="text-sm font-semibold text-purple-600 mb-1">TECH</p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      <Link href={`/blog/${post.id}`}>{post.title}</Link>
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3">
+                      {post.content.substring(0, 150)}...
+                    </p>
+                    <div className="text-xs text-gray-500">
+                      {post.user.username} · {new Date(post.createdAt).toLocaleDateString()} · 5 min read
+                    </div>
                   </div>
                 </div>
-              </div>
-            </article>
-
-            {/* Article Card 2 */}
-            <article className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-              <div className="flex flex-col md:flex-row gap-6 items-start">
-                <div className="md:w-1/3">
-                  <img className="w-full h-32 object-cover rounded-lg" src="https://placehold.co/400x250/10b981/ffffff?text=Financial+Tip" alt="Finance" />
-                </div>
-                <div className="md:w-2/3">
-                  <p className="text-sm font-semibold text-green-600 mb-1">FINANCE & TECH</p>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Compound Interest: The Secret to Long-Term Wealth Generation
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-3">
-                    We break down the magic of daily compounding and how even small principal amounts can grow significantly over time using the right investment vehicles.
-                  </p>
-                  <div className="text-xs text-gray-500">
-                    Alice Johnson · 1 week ago · 7 min read
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            {/* Article Card 3 */}
-            <article className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-              <div className="flex flex-col md:flex-row gap-6 items-start">
-                <div className="md:w-1/3">
-                  <img className="w-full h-32 object-cover rounded-lg" src="https://placehold.co/400x250/f97316/ffffff?text=OOP+Code" alt="OOP Principles" />
-                </div>
-                <div className="md:w-2/3">
-                  <p className="text-sm font-semibold text-orange-600 mb-1">SOFTWARE DESIGN</p>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Interface vs. Abstract Class: Which to Choose for Your Architecture
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-3">
-                    A clear look at the Contract vs. Base dilemma in OOP and how to apply these concepts in Java or TypeScript for clean, maintainable code.
-                  </p>
-                  <div className="text-xs text-gray-500">
-                    Bob Williams · 2 weeks ago · 6 min read
-                  </div>
-                </div>
-              </div>
-            </article>
+              </article>
+            ))
+            )}
 
             {/* Load More Button */}
             <div className="text-center pt-4">
