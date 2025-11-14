@@ -13,4 +13,5 @@ public interface PostService {
     Optional<Post> getPostById(Long id);
     void deletePost(Long id);
     Post updatePost(Long id, Post post);
+    List<Post> getFeaturedPosts();
 }

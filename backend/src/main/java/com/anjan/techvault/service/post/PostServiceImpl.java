@@ -125,4 +125,9 @@ public class PostServiceImpl implements PostService {
 
         return postRepository.save(postToUpdate);
     }
+
+    @Override
+    public List<Post> getFeaturedPosts() {
+        return postRepository.find("featured = true ORDER BY createdAt DESC").list();
+    }
 }

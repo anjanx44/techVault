@@ -56,6 +56,22 @@ public class PostController {
         return Response.ok(postService.searchPostsByTitle(keyword)).build();
     }
 
+    @GET
+    @Path("/featured")
+    @PermitAll
+    public Response getFeaturedPosts() {
+        return Response.ok(postService.getFeaturedPosts()).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    @PermitAll
+    public Response getPostById(@PathParam("id") Long id) {
+        return postService.getPostById(id)
+                .map(post -> Response.ok(post).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
+    }
+
     @DELETE
     @Path("/{id}")
     @RolesAllowed({"admin"})

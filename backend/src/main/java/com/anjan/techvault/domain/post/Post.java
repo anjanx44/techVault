@@ -39,13 +39,14 @@ public class Post {
     private LocalDateTime updatedAt;
 
     private Boolean published = true;
+    private Boolean featured = false;
 
     // No-Args Constructor
     public Post() {}
 
     // All-Args Constructor
     public Post(Long id, String title, String content, User user, List<Comment> comments,
-                List<Tag> tags, LocalDateTime createdAt, LocalDateTime updatedAt, Boolean published) {
+                List<Tag> tags, LocalDateTime createdAt, LocalDateTime updatedAt, Boolean published, Boolean featured) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -55,6 +56,7 @@ public class Post {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.published = published;
+        this.featured = featured;
     }
 
     // Getters and Setters
@@ -128,5 +130,13 @@ public class Post {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public Boolean getFeatured() {
+        return featured;
+    }
+
+    public void setFeatured(Boolean featured) {
+        this.featured = featured;
     }
 }
